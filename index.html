@@ -1086,43 +1086,55 @@
                     </div>
                 </div>
             </div>
-            <form class="contact-form" id="contactForm">
-                <h3>📝 快速询价 / 咨询</h3>
-                <div class="form-group">
-                    <label for="name">您的姓名 *</label>
-                    <input type="text" id="name" placeholder="请输入您的姓名" required>
-                </div>
-                <div class="form-group">
-                    <label for="company">公司名称</label>
-                    <input type="text" id="company" placeholder="请输入公司名称">
-                </div>
-                <div class="form-group">
-                    <label for="phone">联系电话 *</label>
-                    <input type="tel" id="phone" placeholder="请输入联系电话" required>
-                </div>
-                <div class="form-group">
-                    <label for="email">电子邮箱</label>
-                    <input type="email" id="email" placeholder="请输入电子邮箱">
-                </div>
-                <div class="form-group">
-                    <label for="service">感兴趣的服务</label>
-                    <select id="service">
-                        <option value="">请选择</option>
-                        <option value="规划">工厂整体规划</option>
-                        <option value="产线">智能产线设计</option>
-                        <option value="系统">MES/SCADA系统</option>
-                        <option value="仓储">智能仓储物流</option>
-                        <option value="电气">电气与控制系统</option>
-                        <option value="运维">运维与升级</option>
-                        <option value="其他">其他/综合咨询</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label for="message">需求描述</label>
-                    <textarea id="message" placeholder="请简要描述您的项目需求、规模或目标..."></textarea>
-                </div>
-                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">🚀 提交咨询</button>
-            </form>
+        <form class="contact-form" id="contactForm" 
+            action="https://script.google.com/macros/s/AKfycbx71MCkY6EJR9AuO2iBMQk2wEPKP4QBBdbZutIaIUAXh7jXz7kT7EgUmr110mJOgyV_OQ/exec" 
+            method="POST"
+            target="_blank">
+            
+            <h3>📝 快速询价 / 咨询</h3>
+            
+            <div class="form-group">
+                <label for="name">您的姓名 *</label>
+                <input type="text" id="name" name="name" placeholder="请输入您的姓名" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="company">公司名称</label>
+                <input type="text" id="company" name="company" placeholder="请输入公司名称">
+            </div>
+            
+            <div class="form-group">
+                <label for="phone">联系电话 *</label>
+                <input type="tel" id="phone" name="phone" placeholder="请输入联系电话" required>
+            </div>
+            
+            <div class="form-group">
+                <label for="email">电子邮箱</label>
+                <input type="email" id="email" name="email" placeholder="请输入电子邮箱">
+            </div>
+            
+            <div class="form-group">
+                <label for="service">感兴趣的服务</label>
+                <select id="service" name="service">
+                    <option value="">请选择</option>
+                    <option value="规划">工厂整体规划</option>
+                    <option value="产线">智能产线设计</option>
+                    <option value="系统">MES/SCADA系统</option>
+                    <option value="仓储">智能仓储物流</option>
+                    <option value="电气">电气与控制系统</option>
+                    <option value="运维">运维与升级</option>
+                    <option value="其他">其他/综合咨询</option>
+                </select>
+            </div>
+            
+            <div class="form-group">
+                <label for="message">需求描述</label>
+                <textarea id="message" name="message" placeholder="请简要描述您的项目需求、规模或目标..."></textarea>
+            </div>
+            
+            <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">🚀 提交咨询</button>
+            
+        </form>
         </div>
     </section>
 
@@ -1208,67 +1220,34 @@
             });
         });
 
-        // 表单提交 - 对接Google Apps Script
+      // 表单提交 - 直接提交到Google Apps Script
         const contactForm = document.getElementById('contactForm');
-        contactForm.addEventListener('submit', async function(e) {
-            e.preventDefault();
-            
+        contactForm.addEventListener('submit', function(e) {
+            // 基础验证
             const name = document.getElementById('name').value.trim();
             const phone = document.getElementById('phone').value.trim();
+            
             if (!name || !phone) {
+                e.preventDefault(); // 阻止提交
                 alert('请填写必填字段（姓名和联系电话）');
                 return;
             }
-
-            const formData = {
-                name: name,
-                company: document.getElementById('company').value.trim(),
-                phone: phone,
-                email: document.getElementById('email').value.trim(),
-                service: document.getElementById('service').value,
-                message: document.getElementById('message').value.trim()
-            };
-
+            
+            // 验证通过，允许表单正常提交
+            // 禁用按钮防止重复提交
             const submitBtn = contactForm.querySelector('button[type="submit"]');
-            const originalText = submitBtn.textContent;
-            submitBtn.textContent = '⏳ 提交中...';
             submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ 提交中...';
             submitBtn.style.opacity = '0.7';
-
-            try {
-                await submitFormData(formData);
-                alert('✅ 提交成功！我们会尽快联系您。');
-                contactForm.reset();
-            } catch (error) {
-                console.error('提交错误:', error);
-                alert('❌ 提交失败，请稍后重试');
-            } finally {
-                submitBtn.textContent = originalText;
+            
+            // 2秒后恢复按钮（防止提交失败时按钮一直禁用）
+            setTimeout(() => {
                 submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 提交咨询';
                 submitBtn.style.opacity = '1';
-            }
+            }, 3000);
         });
-        function submitFormData(formData) {
-            return new Promise((resolve, reject) => {
-                const xhr = new XMLHttpRequest();
-                xhr.open('POST', 'https://script.google.com/macros/s/AKfycbx71MCkY6EJR9AuO2iBMQk2wEPKP4QBBdbZutIaIUAXh7jXz7kT7EgUmr110mJOgyV_OQ/exec', true);
-                xhr.setRequestHeader('Content-Type', 'application/json');
-                
-                xhr.onload = function() {
-                    if (xhr.status === 200) {
-                        resolve(JSON.parse(xhr.responseText));
-                    } else {
-                        reject(new Error('请求失败'));
-                    }
-                };
-                
-                xhr.onerror = function() {
-                    reject(new Error('网络错误'));
-                };
-                
-                xhr.send(JSON.stringify(formData));
-            });
-        }
+
         // 平滑滚动（兼容性增强）
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
