@@ -1,0 +1,1264 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>智造未来 - 自动化工厂设计服务专家</title>
+    <style>
+        :root {
+            --primary: #0a66c2;
+            --primary-dark: #084e96;
+            --primary-light: #e8f2fb;
+            --accent: #f07900;
+            --dark: #1a1a2e;
+            --dark-2: #16213e;
+            --gray: #6b7280;
+            --gray-light: #f3f4f6;
+            --white: #ffffff;
+            --border: #e5e7eb;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1), 0 4px 10px rgba(0, 0, 0, 0.08);
+            --shadow-xl: 0 20px 50px rgba(0, 0, 0, 0.15);
+            --radius: 12px;
+            --radius-sm: 8px;
+            --radius-full: 50px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --font-sans: 'Segoe UI', 'PingFang SC', 'Microsoft YaHei', 'Helvetica Neue', sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+            font-size: 16px;
+        }
+
+        body {
+            font-family: var(--font-sans);
+            color: var(--dark);
+            background: var(--white);
+            line-height: 1.7;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        /* ========== 导航栏 ========== */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            background: rgba(255, 255, 255, 0.92);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom: 1px solid transparent;
+            transition: all var(--transition);
+            padding: 0 2rem;
+        }
+        .navbar.scrolled {
+            border-bottom-color: var(--border);
+            box-shadow: var(--shadow-sm);
+            background: rgba(255, 255, 255, 0.97);
+        }
+        .navbar .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            max-width: 1280px;
+            margin: 0 auto;
+            height: 70px;
+        }
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--dark);
+            font-weight: 700;
+            font-size: 1.4rem;
+            letter-spacing: -0.5px;
+        }
+        .nav-logo .logo-icon {
+            width: 42px;
+            height: 42px;
+            background: linear-gradient(135deg, var(--primary), #1e88e5);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 0.3rem;
+            align-items: center;
+        }
+        .nav-links a {
+            text-decoration: none;
+            color: var(--gray);
+            font-weight: 500;
+            padding: 0.55rem 1.1rem;
+            border-radius: var(--radius-full);
+            transition: all var(--transition);
+            font-size: 0.95rem;
+            white-space: nowrap;
+        }
+        .nav-links a:hover,
+        .nav-links a.active {
+            color: var(--primary);
+            background: var(--primary-light);
+        }
+        .nav-cta-btn {
+            background: var(--primary) !important;
+            color: #fff !important;
+            padding: 0.6rem 1.5rem !important;
+            border-radius: var(--radius-full) !important;
+            font-weight: 600 !important;
+            transition: all var(--transition) !important;
+            margin-left: 0.5rem;
+        }
+        .nav-cta-btn:hover {
+            background: var(--primary-dark) !important;
+            color: #fff !important;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-1px);
+        }
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 8px;
+            z-index: 1001;
+        }
+        .hamburger span {
+            display: block;
+            width: 26px;
+            height: 2.5px;
+            background: var(--dark);
+            border-radius: 4px;
+            transition: all var(--transition);
+        }
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(5px, 5px);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(5px, -5px);
+        }
+
+        /* ========== Hero 区域 ========== */
+        .hero {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            background: linear-gradient(160deg, #f8fafc 0%, #e8f2fb 30%, #f0f4f8 60%, #ffffff 100%);
+            position: relative;
+            overflow: hidden;
+            padding-top: 70px;
+        }
+        .hero-bg-pattern {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 0;
+        }
+        .hero-bg-pattern .dot-grid {
+            position: absolute;
+            top: 10%;
+            right: 5%;
+            width: 500px;
+            height: 500px;
+            background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.5;
+            border-radius: 50%;
+            animation: floatSlow 8s ease-in-out infinite;
+        }
+        .hero-bg-pattern .circle-accent {
+            position: absolute;
+            bottom: -80px;
+            left: -60px;
+            width: 350px;
+            height: 350px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(10, 102, 194, 0.07) 0%, transparent 70%);
+            animation: floatSlow 10s ease-in-out infinite reverse;
+        }
+        .hero-bg-pattern .circle-accent-2 {
+            position: absolute;
+            top: 20%;
+            left: 55%;
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(240, 121, 0, 0.06) 0%, transparent 70%);
+            animation: floatSlow 7s ease-in-out infinite;
+        }
+        @keyframes floatSlow {
+            0%,
+            100% {
+                transform: translateY(0) scale(1);
+            }
+            33% {
+                transform: translateY(-20px) scale(1.03);
+            }
+            66% {
+                transform: translateY(10px) scale(0.97);
+            }
+        }
+        .hero .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 3rem 2rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            align-items: center;
+            position: relative;
+            z-index: 1;
+            width: 100%;
+        }
+        .hero-content h1 {
+            font-size: clamp(2.2rem, 4.5vw, 3.5rem);
+            font-weight: 800;
+            line-height: 1.2;
+            letter-spacing: -1px;
+            margin-bottom: 1.2rem;
+            color: var(--dark);
+        }
+        .hero-content h1 .highlight {
+            background: linear-gradient(135deg, var(--primary), #1e88e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-content p {
+            font-size: 1.15rem;
+            color: var(--gray);
+            margin-bottom: 2rem;
+            max-width: 500px;
+            line-height: 1.8;
+        }
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.85rem 1.8rem;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            text-decoration: none;
+            transition: all var(--transition);
+            border: none;
+            font-family: inherit;
+            white-space: nowrap;
+        }
+        .btn-primary {
+            background: var(--primary);
+            color: #fff;
+            box-shadow: var(--shadow);
+        }
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+        .btn-outline {
+            background: transparent;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        .btn-outline:hover {
+            background: var(--primary-light);
+            transform: translateY(-2px);
+        }
+        .hero-visual {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .hero-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 2rem;
+            box-shadow: var(--shadow-xl);
+            position: relative;
+            z-index: 2;
+            width: 100%;
+            max-width: 440px;
+            border: 1px solid var(--border);
+        }
+        .hero-card .stat-row {
+            display: flex;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .hero-card .stat-item {
+            flex: 1;
+            text-align: center;
+            background: var(--gray-light);
+            border-radius: var(--radius-sm);
+            padding: 1rem 0.5rem;
+        }
+        .hero-card .stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+        }
+        .hero-card .stat-label {
+            font-size: 0.8rem;
+            color: var(--gray);
+            font-weight: 500;
+        }
+        .hero-card .icon-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.8rem;
+        }
+        .hero-card .icon-grid .grid-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0.7rem 1rem;
+            background: #f8fafc;
+            border-radius: var(--radius-sm);
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--dark);
+        }
+        .hero-card .icon-grid .grid-item .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            flex-shrink: 0;
+        }
+        .dot-blue {
+            background: #3b82f6;
+        }
+        .dot-green {
+            background: #10b981;
+        }
+        .dot-orange {
+            background: #f59e0b;
+        }
+        .dot-purple {
+            background: #8b5cf6;
+        }
+
+        /* ========== 通用区块 ========== */
+        .section {
+            padding: 5rem 2rem;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+        .section-header {
+            text-align: center;
+            margin-bottom: 3.5rem;
+        }
+        .section-header .badge {
+            display: inline-block;
+            background: var(--primary-light);
+            color: var(--primary);
+            padding: 0.4rem 1.2rem;
+            border-radius: var(--radius-full);
+            font-weight: 600;
+            font-size: 0.85rem;
+            letter-spacing: 0.5px;
+            margin-bottom: 1rem;
+        }
+        .section-header h2 {
+            font-size: clamp(1.8rem, 3vw, 2.5rem);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin-bottom: 0.8rem;
+            color: var(--dark);
+        }
+        .section-header p {
+            color: var(--gray);
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.05rem;
+        }
+
+        /* ========== 服务区块 ========== */
+        #services {
+            background: #fafbfc;
+        }
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+        }
+        .service-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 2rem 1.5rem;
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+            position: relative;
+            overflow: hidden;
+            cursor: default;
+        }
+        .service-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-xl);
+            border-color: transparent;
+        }
+        .service-card .card-icon {
+            width: 52px;
+            height: 52px;
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1.2rem;
+            background: var(--primary-light);
+            color: var(--primary);
+            transition: all var(--transition);
+        }
+        .service-card:hover .card-icon {
+            background: var(--primary);
+            color: #fff;
+            transform: scale(1.05);
+        }
+        .service-card h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--dark);
+        }
+        .service-card p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* ========== 案例区块 ========== */
+        .cases-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+        .case-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            overflow: hidden;
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+            cursor: pointer;
+        }
+        .case-card:hover {
+            box-shadow: var(--shadow-xl);
+            transform: translateY(-4px);
+        }
+        .case-card .case-img {
+            height: 200px;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            color: #94a3b8;
+            position: relative;
+            overflow: hidden;
+        }
+        .case-card .case-img .overlay-tag {
+            position: absolute;
+            top: 14px;
+            right: 14px;
+            background: var(--accent);
+            color: #fff;
+            padding: 0.3rem 0.9rem;
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+        .case-card .case-body {
+            padding: 1.3rem 1.5rem 1.5rem;
+        }
+        .case-card .case-body h3 {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 0.3rem;
+        }
+        .case-card .case-body .case-meta {
+            color: var(--gray);
+            font-size: 0.85rem;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        /* ========== 优势区块 ========== */
+        .advantages-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 1.5rem;
+        }
+        .advantage-item {
+            text-align: center;
+            padding: 2rem 1.2rem;
+            border-radius: var(--radius);
+            transition: all var(--transition);
+            background: #fafbfc;
+            border: 1px solid transparent;
+        }
+        .advantage-item:hover {
+            background: var(--white);
+            border-color: var(--border);
+            box-shadow: var(--shadow);
+        }
+        .advantage-item .adv-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+        }
+        .advantage-item h3 {
+            font-weight: 700;
+            font-size: 1.05rem;
+            margin-bottom: 0.4rem;
+        }
+        .advantage-item p {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        /* ========== CTA 区块 ========== */
+        .cta-section {
+            background: linear-gradient(135deg, var(--dark-2), var(--dark));
+            border-radius: var(--radius);
+            padding: 3.5rem 2.5rem;
+            text-align: center;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            margin: 0 2rem;
+        }
+        .cta-section::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(circle at 30% 40%, rgba(255, 255, 255, 0.04) 0%, transparent 60%);
+            pointer-events: none;
+        }
+        .cta-section h2 {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.8rem;
+            position: relative;
+            z-index: 1;
+        }
+        .cta-section p {
+            color: #cbd5e1;
+            margin-bottom: 1.8rem;
+            position: relative;
+            z-index: 1;
+            font-size: 1.05rem;
+        }
+        .cta-section .btn {
+            position: relative;
+            z-index: 1;
+        }
+        .btn-white {
+            background: #fff;
+            color: var(--dark);
+            font-weight: 700;
+        }
+        .btn-white:hover {
+            background: #e2e8f0;
+            box-shadow: var(--shadow-lg);
+            transform: translateY(-2px);
+        }
+
+        /* ========== 联系表单区块 ========== */
+        #contact {
+            background: #fafbfc;
+        }
+        .contact-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2.5rem;
+            align-items: start;
+        }
+        .contact-info {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        .contact-info .info-card {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            padding: 1.2rem 1.5rem;
+            background: #fff;
+            border-radius: var(--radius-sm);
+            border: 1px solid var(--border);
+            transition: all var(--transition);
+        }
+        .contact-info .info-card:hover {
+            box-shadow: var(--shadow);
+        }
+        .contact-info .info-card .info-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .contact-info .info-card h4 {
+            font-weight: 700;
+            margin-bottom: 0.2rem;
+            font-size: 0.95rem;
+        }
+        .contact-info .info-card span {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        .contact-form {
+            background: #fff;
+            padding: 2rem;
+            border-radius: var(--radius);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow-sm);
+        }
+        .contact-form h3 {
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+        }
+        .form-group {
+            margin-bottom: 1.2rem;
+        }
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 0.4rem;
+            font-size: 0.9rem;
+            color: var(--dark);
+        }
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            border: 1.5px solid var(--border);
+            border-radius: var(--radius-sm);
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: all var(--transition);
+            background: #fafbfc;
+            resize: vertical;
+        }
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(10, 102, 194, 0.1);
+            background: #fff;
+        }
+        .form-group textarea {
+            min-height: 120px;
+        }
+
+        /* ========== 页脚 ========== */
+        .footer {
+            background: var(--dark);
+            color: #cbd5e1;
+            padding: 3rem 2rem 1.5rem;
+            font-size: 0.9rem;
+        }
+        .footer .container {
+            max-width: 1280px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .footer h4 {
+            color: #fff;
+            font-weight: 700;
+            margin-bottom: 1rem;
+            font-size: 1rem;
+        }
+        .footer ul {
+            list-style: none;
+        }
+        .footer ul li {
+            margin-bottom: 0.5rem;
+        }
+        .footer ul li a {
+            color: #94a3b8;
+            text-decoration: none;
+            transition: color var(--transition);
+        }
+        .footer ul li a:hover {
+            color: #fff;
+        }
+        .footer-bottom {
+            border-top: 1px solid #334155;
+            padding-top: 1.5rem;
+            text-align: center;
+            max-width: 1280px;
+            margin: 0 auto;
+            color: #64748b;
+            font-size: 0.8rem;
+        }
+
+        /* ========== 响应式 ========== */
+        @media (max-width: 968px) {
+            .hero .container {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 2rem;
+            }
+            .hero-content p {
+                margin-left: auto;
+                margin-right: auto;
+            }
+            .hero-buttons {
+                justify-content: center;
+            }
+            .hero-visual {
+                order: -1;
+            }
+            .hero-card {
+                max-width: 100%;
+            }
+            .contact-wrapper {
+                grid-template-columns: 1fr;
+            }
+            .cta-section {
+                margin: 0 1rem;
+                padding: 2.5rem 1.5rem;
+            }
+        }
+        @media (max-width: 768px) {
+            .nav-links {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 280px;
+                height: 100vh;
+                background: #fff;
+                flex-direction: column;
+                padding: 5rem 2rem 2rem;
+                gap: 0.5rem;
+                box-shadow: var(--shadow-xl);
+                transition: right var(--transition);
+                z-index: 999;
+                border-left: 1px solid var(--border);
+            }
+            .nav-links.active {
+                right: 0;
+            }
+            .nav-links a {
+                display: block;
+                padding: 0.7rem 1rem;
+                border-radius: var(--radius-sm);
+                font-size: 1rem;
+            }
+            .nav-cta-btn {
+                margin-left: 0;
+                text-align: center;
+                margin-top: 0.5rem;
+            }
+            .hamburger {
+                display: flex;
+            }
+            .section {
+                padding: 3.5rem 1.2rem;
+            }
+            .hero {
+                padding-top: 80px;
+                min-height: auto;
+                padding-bottom: 2rem;
+            }
+            .hero .container {
+                padding: 1.5rem 1rem;
+            }
+            .cases-grid {
+                grid-template-columns: 1fr;
+            }
+            .services-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        @media (max-width: 480px) {
+            .services-grid {
+                grid-template-columns: 1fr;
+            }
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            .hero-buttons .btn {
+                width: 100%;
+                justify-content: center;
+            }
+            .hero-card .stat-row {
+                flex-direction: column;
+                gap: 0.8rem;
+            }
+            .hero-card .icon-grid {
+                grid-template-columns: 1fr;
+            }
+            .advantages-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- ==================== 导航栏 ==================== -->
+    <nav class="navbar" id="navbar">
+        <div class="container">
+            <a href="#" class="nav-logo">
+                <span class="logo-icon">⚙️</span>
+                <span>智造未来</span>
+            </a>
+            <ul class="nav-links" id="navLinks">
+                <li><a href="#home" class="active">首页</a></li>
+                <li><a href="#services">服务范围</a></li>
+                <li><a href="#cases">项目案例</a></li>
+                <li><a href="#advantages">核心优势</a></li>
+                <li><a href="#contact">联系我们</a></li>
+                <li><a href="#contact" class="nav-cta-btn">免费咨询</a></li>
+            </ul>
+            <button class="hamburger" id="hamburger" aria-label="菜单">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- ==================== Hero 区域 ==================== -->
+    <section class="hero" id="home">
+        <div class="hero-bg-pattern">
+            <div class="dot-grid"></div>
+            <div class="circle-accent"></div>
+            <div class="circle-accent-2"></div>
+        </div>
+        <div class="container">
+            <div class="hero-content">
+                <h1>
+                    打造<span class="highlight">智能高效</span>的<br>自动化工厂解决方案
+                </h1>
+                <p>
+                    深耕自动化工厂设计领域15年，为制造企业提供从规划、设计到落地的一站式服务。助力工业4.0转型，实现降本增效。
+                </p>
+                <div class="hero-buttons">
+                    <a href="#contact" class="btn btn-primary">📋 获取专属方案</a>
+                    <a href="#cases" class="btn btn-outline">📁 查看案例</a>
+                </div>
+            </div>
+            <div class="hero-visual">
+                <div class="hero-card">
+                    <div class="stat-row">
+                        <div class="stat-item">
+                            <span class="stat-number">500+</span>
+                            <span class="stat-label">成功项目</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">98%</span>
+                            <span class="stat-label">客户满意度</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">15年</span>
+                            <span class="stat-label">行业经验</span>
+                        </div>
+                    </div>
+                    <div class="icon-grid">
+                        <div class="grid-item"><span class="dot dot-blue"></span> 智能产线规划</div>
+                        <div class="grid-item"><span class="dot dot-green"></span> 机器人集成</div>
+                        <div class="grid-item"><span class="dot dot-orange"></span> MES系统设计</div>
+                        <div class="grid-item"><span class="dot dot-purple"></span> 物流自动化</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 服务范围 ==================== -->
+    <section class="section" id="services">
+        <div class="section-header">
+            <span class="badge">我们的服务</span>
+            <h2>一站式自动化工厂设计服务</h2>
+            <p>覆盖工厂全生命周期，从前期规划到后期运维，提供端到端的专业服务</p>
+        </div>
+        <div class="services-grid">
+            <div class="service-card">
+                <div class="card-icon">🏭</div>
+                <h3>工厂整体规划</h3>
+                <p>基于产能目标和工艺流程，进行工厂布局设计、物流路线优化及功能分区规划，最大化空间利用率。</p>
+            </div>
+            <div class="service-card">
+                <div class="card-icon">🤖</div>
+                <h3>智能产线设计</h3>
+                <p>定制化自动化产线方案，集成工业机器人、AGV及视觉检测系统，实现柔性化、高效率生产。</p>
+            </div>
+            <div class="service-card">
+                <div class="card-icon">📡</div>
+                <h3>MES / SCADA 系统</h3>
+                <p>部署制造执行系统与数据采集监控系统，打通设备层与管理层，实现生产数据实时透明化。</p>
+            </div>
+            <div class="service-card">
+                <div class="card-icon">📦</div>
+                <h3>智能仓储物流</h3>
+                <p>设计自动化立体仓库、智能分拣系统及AGV配送网络，大幅提升仓储周转效率与准确率。</p>
+            </div>
+            <div class="service-card">
+                <div class="card-icon">⚡</div>
+                <h3>电气与控制系统</h3>
+                <p>提供PLC编程、HMI界面设计、配电系统规划及安全联锁方案，确保系统稳定可靠运行。</p>
+            </div>
+            <div class="service-card">
+                <div class="card-icon">🔧</div>
+                <h3>运维与升级服务</h3>
+                <p>提供设备维保、系统优化、技术改造及人员培训，持续保障工厂高效运转与迭代升级。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 项目案例 ==================== -->
+    <section class="section" id="cases">
+        <div class="section-header">
+            <span class="badge">精选案例</span>
+            <h2>成功项目展示</h2>
+            <p>以实力赢得信任，每个项目都是我们的匠心之作</p>
+        </div>
+        <div class="cases-grid">
+            <div class="case-card">
+                <div class="case-img">
+                    🏭
+                    <span class="overlay-tag">汽车零部件</span>
+                </div>
+                <div class="case-body">
+                    <h3>某新能源汽车零部件智能工厂</h3>
+                    <div class="case-meta">
+                        <span>📍 华东地区</span>
+                        <span>📐 12,000㎡</span>
+                        <span>🤖 60+机器人</span>
+                    </div>
+                    <p style="color:#6b7280;font-size:0.85rem;margin-top:0.5rem;">实现产线自动化率92%，年产能提升300%。</p>
+                </div>
+            </div>
+            <div class="case-card">
+                <div class="case-img">
+                    📦
+                    <span class="overlay-tag">食品饮料</span>
+                </div>
+                <div class="case-body">
+                    <h3>某大型食品集团智能仓储中心</h3>
+                    <div class="case-meta">
+                        <span>📍 华南地区</span>
+                        <span>📐 8,000㎡</span>
+                        <span>📦 日均处理50万件</span>
+                    </div>
+                    <p style="color:#6b7280;font-size:0.85rem;margin-top:0.5rem;">仓储效率提升65%，人工成本降低40%。</p>
+                </div>
+            </div>
+            <div class="case-card">
+                <div class="case-img">
+                    ⚙️
+                    <span class="overlay-tag">精密制造</span>
+                </div>
+                <div class="case-body">
+                    <h3>某精密轴承全自动生产线</h3>
+                    <div class="case-meta">
+                        <span>📍 华中地区</span>
+                        <span>📐 5,500㎡</span>
+                        <span>🎯 良品率99.7%</span>
+                    </div>
+                    <p style="color:#6b7280;font-size:0.85rem;margin-top:0.5rem;">全流程无人化，实现24小时不间断生产。</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== 核心优势 ==================== -->
+    <section class="section" id="advantages">
+        <div class="section-header">
+            <span class="badge">为什么选择我们</span>
+            <h2>核心竞争优势</h2>
+            <p>用专业能力与丰富经验，为您的工厂升级保驾护航</p>
+        </div>
+        <div class="advantages-grid">
+            <div class="advantage-item">
+                <span class="adv-icon">🎓</span>
+                <h3>资深专家团队</h3>
+                <p>核心成员平均从业经验超12年，涵盖机械、电气、软件等多领域专家。</p>
+            </div>
+            <div class="advantage-item">
+                <span class="adv-icon">📋</span>
+                <h3>全流程服务</h3>
+                <p>从需求调研、方案设计到施工调试、验收培训，一站式交付无后顾之忧。</p>
+            </div>
+            <div class="advantage-item">
+                <span class="adv-icon">💡</span>
+                <h3>技术创新驱动</h3>
+                <p>持续追踪前沿技术，将AI视觉、数字孪生等融入方案，保持领先性。</p>
+            </div>
+            <div class="advantage-item">
+                <span class="adv-icon">🛡️</span>
+                <h3>终身技术支持</h3>
+                <p>项目交付后提供长期运维支持与系统升级服务，成为您可信赖的伙伴。</p>
+            </div>
+            <div class="advantage-item">
+                <span class="adv-icon">💰</span>
+                <h3>高投资回报率</h3>
+                <p>方案设计以ROI为导向，帮助客户在18-36个月内收回投资成本。</p>
+            </div>
+            <div class="advantage-item">
+                <span class="adv-icon">🏅</span>
+                <h3>行业资质齐全</h3>
+                <p>持有甲级设计资质、ISO9001认证及多项国家专利，品质有保障。</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ==================== CTA 区块 ==================== -->
+    <div class="cta-section" style="max-width:1280px;margin:0 auto 5rem;">
+        <h2>🚀 准备好升级您的工厂了吗？</h2>
+        <p>立即联系我们，获取免费工厂诊断与初步方案建议</p>
+        <a href="#contact" class="btn btn-white">立即免费咨询 →</a>
+    </div>
+
+    <!-- ==================== 联系我们 ==================== -->
+    <section class="section" id="contact" style="padding-top:0;">
+        <div class="section-header">
+            <span class="badge">联系我们</span>
+            <h2>开启合作之旅</h2>
+            <p>留下您的需求，我们将在24小时内与您取得联系</p>
+        </div>
+        <div class="contact-wrapper">
+            <div class="contact-info">
+                <div class="info-card">
+                    <span class="info-icon">📍</span>
+                    <div>
+                        <h4>公司地址</h4>
+                        <span>上海市浦东新区张江高科技园区智造路88号</span>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <span class="info-icon">📞</span>
+                    <div>
+                        <h4>联系电话</h4>
+                        <span>400-888-9999 / 021-5888-6666</span>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <span class="info-icon">✉️</span>
+                    <div>
+                        <h4>电子邮箱</h4>
+                        <span>info@smartfactory.cn</span>
+                    </div>
+                </div>
+                <div class="info-card">
+                    <span class="info-icon">🕐</span>
+                    <div>
+                        <h4>工作时间</h4>
+                        <span>周一至周五 9:00 - 18:00</span>
+                    </div>
+                </div>
+            </div>
+            <form class="contact-form" id="contactForm">
+                <h3>📝 快速询价 / 咨询</h3>
+                <div class="form-group">
+                    <label for="name">您的姓名 *</label>
+                    <input type="text" id="name" placeholder="请输入您的姓名" required>
+                </div>
+                <div class="form-group">
+                    <label for="company">公司名称</label>
+                    <input type="text" id="company" placeholder="请输入公司名称">
+                </div>
+                <div class="form-group">
+                    <label for="phone">联系电话 *</label>
+                    <input type="tel" id="phone" placeholder="请输入联系电话" required>
+                </div>
+                <div class="form-group">
+                    <label for="email">电子邮箱</label>
+                    <input type="email" id="email" placeholder="请输入电子邮箱">
+                </div>
+                <div class="form-group">
+                    <label for="service">感兴趣的服务</label>
+                    <select id="service">
+                        <option value="">请选择</option>
+                        <option value="规划">工厂整体规划</option>
+                        <option value="产线">智能产线设计</option>
+                        <option value="系统">MES/SCADA系统</option>
+                        <option value="仓储">智能仓储物流</option>
+                        <option value="电气">电气与控制系统</option>
+                        <option value="运维">运维与升级</option>
+                        <option value="其他">其他/综合咨询</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">需求描述</label>
+                    <textarea id="message" placeholder="请简要描述您的项目需求、规模或目标..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width:100%;justify-content:center;">🚀 提交咨询</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- ==================== 页脚 ==================== -->
+    <footer class="footer">
+        <div class="container">
+            <div>
+                <h4>⚙️ 智造未来</h4>
+                <p style="color:#94a3b8;font-size:0.85rem;">专注于自动化工厂设计与智能制造解决方案，助力中国制造走向中国智造。</p>
+            </div>
+            <div>
+                <h4>快速导航</h4>
+                <ul>
+                    <li><a href="#home">首页</a></li>
+                    <li><a href="#services">服务范围</a></li>
+                    <li><a href="#cases">项目案例</a></li>
+                    <li><a href="#advantages">核心优势</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>服务领域</h4>
+                <ul>
+                    <li><a href="#">汽车制造</a></li>
+                    <li><a href="#">电子装配</a></li>
+                    <li><a href="#">食品饮料</a></li>
+                    <li><a href="#">医药化工</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4>关注我们</h4>
+                <p style="color:#94a3b8;font-size:0.85rem;">微信公众号：智造未来科技</p>
+                <p style="color:#94a3b8;font-size:0.85rem;">抖音：@SmartFactory_CN</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 智造未来自动化科技有限公司 版权所有 | 沪ICP备2026XXXXXX号 | 致力于自动化工厂设计服务</p>
+        </div>
+    </footer>
+
+    <!-- ==================== JavaScript ==================== -->
+    <script>
+        // 导航栏滚动效果
+        const navbar = document.getElementById('navbar');
+        const hamburger = document.getElementById('hamburger');
+        const navLinks = document.getElementById('navLinks');
+        const allNavLinks = navLinks.querySelectorAll('a');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('scrolled');
+            } else {
+                navbar.classList.remove('scrolled');
+            }
+
+            // 高亮当前区块对应的导航
+            let current = '';
+            const sections = document.querySelectorAll('section[id], div[id]');
+            sections.forEach(section => {
+                const sectionTop = section.offsetTop - 120;
+                if (window.scrollY >= sectionTop) {
+                    current = section.getAttribute('id');
+                }
+            });
+            allNavLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === '#' + current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        // 汉堡菜单
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            navLinks.classList.toggle('active');
+        });
+
+        // 点击导航链接关闭菜单
+        allNavLinks.forEach(link => {
+            link.addEventListener('click', () => {
+                hamburger.classList.remove('active');
+                navLinks.classList.remove('active');
+            });
+        });
+
+        // 表单提交
+        const contactForm = document.getElementById('contactForm');
+        contactForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            const name = document.getElementById('name').value.trim();
+            const phone = document.getElementById('phone').value.trim();
+            if (!name || !phone) {
+                alert('请填写必填字段（姓名和联系电话）');
+                return;
+            }
+            // 模拟提交
+            const submitBtn = contactForm.querySelector('button[type="submit"]');
+            const originalText = submitBtn.textContent;
+            submitBtn.textContent = '⏳ 提交中...';
+            submitBtn.disabled = true;
+            submitBtn.style.opacity = '0.7';
+
+            setTimeout(() => {
+                alert('✅ 感谢您的咨询！\n\n我们已收到您的信息，将在24小时内安排专业顾问与您联系。');
+                contactForm.reset();
+                submitBtn.textContent = originalText;
+                submitBtn.disabled = false;
+                submitBtn.style.opacity = '1';
+            }, 1500);
+        });
+
+        // 平滑滚动（兼容性增强）
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                const target = document.querySelector(targetId);
+                if (target) {
+                    e.preventDefault();
+                    const offset = 80;
+                    const position = target.getBoundingClientRect().top + window.pageYOffset - offset;
+                    window.scrollTo({
+                        top: position,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+
+        // 页面加载时初始检查滚动状态
+        if (window.scrollY > 50) {
+            navbar.classList.add('scrolled');
+        }
+
+        console.log('🏭 智造未来 - 自动化工厂设计服务官网已就绪');
+        console.log('📞 咨询热线：400-888-9999');
+    </script>
+</body>
+</html>
