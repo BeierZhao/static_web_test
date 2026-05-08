@@ -1,0 +1,20 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import ContactForm from '../components/contact/ContactForm.astro';
+import ContactInfo from '../components/contact/ContactInfo.astro';
+---
+<BaseLayout title="Contact Us">
+  <section class="pt-24 pb-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <div class="text-center mb-10">
+        <span class="badge">Get in Touch</span>
+        <h1 class="section-title mt-2">Start Your Automation Journey</h1>
+        <p class="section-subtitle">Tell us about your project, and we'll get back to you within 24 hours.</p>
+      </div>
+      <div class="grid md:grid-cols-2 gap-10 max-w-5xl mx-auto">
+        <ContactInfo />
+        <ContactForm />
+      </div>
+    </div>
+  </section>
+</BaseLayout>

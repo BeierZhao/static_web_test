@@ -1,0 +1,43 @@
+---
+const categories = [
+  { id: '', label: 'All' },
+  { id: 'powder-packaging', label: 'Powder Packaging' },
+  { id: 'vision-inspection', label: 'Vision / AI Inspection' },
+  { id: 'automation', label: 'Automation & Integration' },
+];
+---
+
+<div class="flex flex-wrap gap-4 items-center justify-between">
+  <div class="flex flex-wrap gap-2 items-center">
+    <span class="text-sm font-semibold text-gray-600 mr-2">Category:</span>
+    {categories.map(cat => (
+      <button
+        @click="switchCategory('${cat.id}')"
+        :class="selectedCategory === '${cat.id}' ? 'bg-industrial-600 text-white' : 'bg-white text-gray-600 border'"
+        class="px-4 py-1.5 rounded-full text-sm font-medium transition-colors"
+      >
+        {cat.label}
+      </button>
+    ))}
+  </div>
+  <div class="flex gap-2 items-center">
+    <input
+      type="text"
+      placeholder="Search material..."
+      class="px-4 py-2 rounded-lg border border-gray-300 text-sm focus:outline-none focus:ring-2 focus:ring-industrial-500"
+      x-model="searchText"
+    />
+  </div>
+</div>
+
+<div class="mt-4 flex flex-wrap gap-2" x-show="allTags.length > 0">
+  <span class="text-sm font-semibold text-gray-600 mr-2">Tags:</span>
+  <template x-for="tag in allTags" :key="tag">
+    <button
+      @click="toggleTag(tag)"
+      :class="selectedTags.includes(tag) ? 'bg-industrial-600 text-white' : 'bg-white text-gray-600 border'"
+      class="px-3 py-1 rounded-full text-xs font-medium transition-colors"
+      x-text="'#' + tag"
+    ></button>
+  </template>
+</div>

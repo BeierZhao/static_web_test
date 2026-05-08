@@ -1,0 +1,156 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import FilterBar from '../../components/solutions/FilterBar.astro';
+import { getCollection } from 'astro:content';
+
+const allMachines = await getCollection('machines');
+const machines = allMachines.map(m => ({
+  ...m.data,
+  content: m.body || '',
+  slug: m.slug,
+}));
+
+// 提前计算所有标签，避免在客户端重复计算
+const allTags = [...new Set(machines.flatMap(m => m.tags || []))];
+---
+
+<BaseLayout title="Solutions - Industrial Machinery Matrix">
+  <section class="pt-24 pb-16 bg-gray-50 min-h-screen"
+    x-data="{
+      selectedCategory: '',
+      selectedTags: [],
+      searchText: '',
+      detailSlug: null,
+      showDetail: false,
+      machines: [],
+      allTags: [],
+
+      init() {
+        // 从全局变量中获取机器数据
+        this.machines = window.__MACHINES__;
+        this.allTags = window.__ALL_TAGS__;
+      },
+
+      get filteredMachines() {
+        let items = this.machines;
+        if (this.selectedCategory) items = items.filter(m => m.category === this.selectedCategory);
+        if (this.selectedTags.length) items = items.filter(m => this.selectedTags.every(t => m.tags?.includes(t)));
+        if (this.searchText) {
+          const lowerSearch = this.searchText.toLowerCase();
+          items = items.filter(m =>
+            m.materials?.some(mat => mat.toLowerCase().includes(lowerSearch)) ||
+            m.title.toLowerCase().includes(lowerSearch)
+          );
+        }
+        return items;
+      },
+
+      toggleTag(tag) {
+        if (this.selectedTags.includes(tag)) {
+          this.selectedTags = this.selectedTags.filter(t => t !== tag);
+        } else if (this.selectedTags.length < 5) {
+          this.selectedTags.push(tag);
+        }
+      },
+
+      // 切换分类：再次点击已选中的分类可取消筛选
+      switchCategory(catId) {
+        this.selectedCategory = (this.selectedCategory === catId) ? '' : catId;
+      },
+
+      openDetail(slug) {
+        this.detailSlug = slug;
+        this.showDetail = true;
+      }
+    }">
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6">
+      <h1 class="text-4xl font-extrabold text-industrial-900 mb-2">Solutions Matrix</h1>
+      <p class="text-gray-500 mb-8">Filter by category, tags, or materials to find the perfect machine for your production line.</p>
+
+      <FilterBar />
+
+      <!-- 卡片网格，使用 Alpine x-for 渲染 -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-8">
+        <template x-for="machine in filteredMachines" :key="machine.slug">
+          <div class="card flex flex-col">
+            <img :src="machine.thumbnail" :alt="machine.title" class="w-full h-40 object-cover rounded-lg mb-4" />
+            <h3 class="text-lg font-bold mb-1" x-text="machine.title"></h3>
+            <p class="text-sm text-gray-500 mb-2" x-text="machine.model"></p>
+            <p class="text-xs text-gray-400 mb-3 line-clamp-2" x-text="machine.highlight || machine.content?.substring(0, 80)"></p>
+            <div class="flex flex-wrap gap-1 mb-4">
+              <template x-for="tag in machine.tags?.slice(0,3)" :key="tag">
+                <span class="px-2 py-0.5 bg-gray-100 text-gray-600 text-xs rounded-full" x-text="'#' + tag"></span>
+              </template>
+            </div>
+            <div class="mt-auto">
+              <button @click="openDetail(machine.slug)" class="w-full btn btn-outline text-sm py-2">Quick View</button>
+            </div>
+          </div>
+        </template>
+      </div>
+    </div>
+
+    <!-- 详情弹窗 -->
+    <div x-show="showDetail" x-transition.opacity class="fixed inset-0 z-50 flex items-center justify-center p-4" style="background: rgba(0,0,0,0.5)" @click.self="showDetail = false">
+      <div class="bg-white rounded-2xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6"
+        x-data="{ machine: null }"
+        x-init="machine = machines.find(m => m.slug === detailSlug)">
+        <div class="flex justify-between items-start mb-4">
+          <h2 class="text-2xl font-bold" x-text="machine?.title"></h2>
+          <button @click="showDetail = false" class="text-gray-400 hover:text-gray-600 text-xl">&times;</button>
+        </div>
+        <img :src="machine?.thumbnail" alt="" class="w-full h-48 object-cover rounded-lg mb-4">
+
+        <template x-if="machine">
+          <div>
+            <div class="grid grid-cols-2 gap-3 mb-4 text-sm">
+              <template x-if="machine.weightRange">
+                <div><span class="font-semibold">Weight Range:</span> <span x-text="machine.weightRange"></span></div>
+              </template>
+              <template x-if="machine.accuracy">
+                <div><span class="font-semibold">Accuracy:</span> <span x-text="machine.accuracy"></span></div>
+              </template>
+              <template x-if="machine.speed">
+                <div><span class="font-semibold">Speed:</span> <span x-text="machine.speed"></span></div>
+              </template>
+              <template x-if="machine.power">
+                <div><span class="font-semibold">Power:</span> <span x-text="machine.power"></span></div>
+              </template>
+            </div>
+            <template x-if="machine.materials?.length">
+              <div class="mb-3">
+                <span class="font-semibold text-sm">Materials:</span>
+                <span x-text="machine.materials.join(', ')" class="text-sm text-gray-600"></span>
+              </div>
+            </template>
+            <template x-if="machine.components?.length">
+              <div class="mb-3">
+                <span class="font-semibold text-sm">Core Components:</span>
+                <span x-text="machine.components.join(', ')" class="text-sm text-gray-600"></span>
+              </div>
+            </template>
+            <div class="flex gap-2 mb-4">
+              <template x-if="machine.compliance?.remoteSupport">
+                <span class="px-2 py-1 bg-green-100 text-green-700 text-xs rounded-full">Remote PLC Support</span>
+              </template>
+              <template x-if="machine.compliance?.esaCsaCertified">
+                <span class="px-2 py-1 bg-blue-100 text-blue-700 text-xs rounded-full">ESA/CSA Certified</span>
+              </template>
+            </div>
+            <div class="prose prose-sm max-w-none" x-html="machine.content"></div>
+          </div>
+        </template>
+      </div>
+    </div>
+  </section>
+
+  <!-- 安全传递服务器数据，避免 JSON 转义问题 -->
+  <script define:vars={{ 
+    machinesJSON: JSON.stringify(machines),
+    allTagsJSON: JSON.stringify(allTags)
+  }}>
+    window.__MACHINES__ = JSON.parse(machinesJSON);
+    window.__ALL_TAGS__ = JSON.parse(allTagsJSON);
+  </script>
+</BaseLayout>

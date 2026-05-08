@@ -1,0 +1,40 @@
+---
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/solutions', label: 'Solutions' },
+  { href: '/how-we-work', label: 'How We Work' },
+  { href: '/contact', label: 'Contact' },
+];
+---
+<header class="fixed top-0 left-0 w-full z-50 bg-white/90 backdrop-blur-xl border-b border-gray-200" x-data="{ mobileOpen: false }">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 flex items-center justify-between h-16">
+    <a href="/" class="flex items-center gap-2 text-industrial-900 font-bold text-xl no-underline">
+      <span class="w-8 h-8 bg-industrial-600 rounded-lg flex items-center justify-center text-white text-sm">JZ</span>
+      <span>JZR Automation</span>
+    </a>
+    <!-- Desktop Navigation -->
+    <nav class="hidden md:flex items-center gap-2">
+      {navLinks.map(link => (
+        <a href={link.href} class="px-4 py-2 rounded-full text-gray-600 font-medium hover:text-industrial-600 hover:bg-industrial-50 transition-colors">
+          {link.label}
+        </a>
+      ))}
+      <a href="/contact" class="btn btn-primary ml-2">Book a Consultation</a>
+    </nav>
+    <!-- Mobile Hamburger -->
+    <button @click="mobileOpen = !mobileOpen" class="md:hidden p-2" aria-label="Toggle menu">
+      <span class="block w-6 h-0.5 bg-industrial-900 rounded mb-1 transition-transform" :class="{'rotate-45 translate-y-1.5': mobileOpen}"></span>
+      <span class="block w-6 h-0.5 bg-industrial-900 rounded mb-1" :class="{'opacity-0': mobileOpen}"></span>
+      <span class="block w-6 h-0.5 bg-industrial-900 rounded transition-transform" :class="{'-rotate-45 -translate-y-1.5': mobileOpen}"></span>
+    </button>
+  </div>
+  <!-- Mobile Menu -->
+  <div x-show="mobileOpen" x-transition class="md:hidden bg-white border-t border-gray-200 shadow-lg">
+    <div class="px-4 py-3 space-y-2">
+      {navLinks.map(link => (
+        <a href={link.href} class="block px-4 py-2 rounded-lg text-gray-700 font-medium hover:bg-industrial-50">{link.label}</a>
+      ))}
+      <a href="/contact" class="btn btn-primary w-full justify-center">Book a Consultation</a>
+    </div>
+  </div>
+</header>

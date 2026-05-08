@@ -1,0 +1,42 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import CTAButton from '../../components/global/CTAButton.astro';
+
+export async function getStaticPaths() {
+  const machines = await getCollection('machines');
+  return machines.map(m => ({ params: { slug: m.slug }, props: { machine: m } }));
+}
+
+const { machine } = Astro.props;
+const { data, body } = machine;
+const { Content } = await machine.render();
+---
+<BaseLayout title={`${data.model} - ${data.title}`} description={data.highlight}>
+  <section class="pt-24 pb-16 bg-white">
+    <div class="max-w-5xl mx-auto px-4">
+      <a href="/solutions" class="text-industrial-600 hover:underline mb-4 inline-block">&larr; Back to Solutions</a>
+      <h1 class="text-3xl font-extrabold mb-2">{data.title}</h1>
+      <p class="text-gray-500">{data.model}</p>
+      <img src={data.thumbnail} alt={data.title} class="w-full max-w-2xl rounded-xl my-6" />
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 bg-gray-50 p-6 rounded-lg mb-6">
+        {data.weightRange && <div><span class="font-semibold text-sm">Weight Range</span><p>{data.weightRange}</p></div>}
+        {data.accuracy && <div><span class="font-semibold text-sm">Accuracy</span><p>{data.accuracy}</p></div>}
+        {data.speed && <div><span class="font-semibold text-sm">Speed</span><p>{data.speed}</p></div>}
+        {data.power && <div><span class="font-semibold text-sm">Power</span><p>{data.power}</p></div>}
+      </div>
+      <div class="prose max-w-none mb-6">
+        <Content />
+      </div>
+      {data.tags && (
+        <div class="flex flex-wrap gap-2 mb-4">
+          {data.tags.map(tag => <span class="px-3 py-1 bg-gray-200 rounded-full text-sm">#{tag}</span>)}
+        </div>
+      )}
+      <div class="flex gap-4">
+        <CTAButton href="/contact">Get a Quote</CTAButton>
+        <CTAButton href="/solutions" variant="outline">Compare Models</CTAButton>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -4,3 +4,8 @@
 !.dev.vars.example
 .env*
 !.env.example
+# Dependencies
+node_modules/
+
+# Astro build output
+.astro/
