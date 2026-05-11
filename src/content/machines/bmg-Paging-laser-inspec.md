@@ -1,10 +1,10 @@
 ---
-model: BMG-LS-FB
+model: BMG-PG-LS-INS
 category: vision-inspection
 subcategory: laser-coding
 title: Paging Laser Marking Integrated Machine
 tags: [LaserCoding, AIInspection, Barcoding]
-thumbnail: /images/machines/bmg-laser-1.webp
+thumbnail: /images/machines/bmg-Paging-laser-inspec.webp
 speed: 8,000 pcs/hour
 power: 3KW
 materials: [Paper, Film, Plastic Bags, Aluminum Foil Bags]

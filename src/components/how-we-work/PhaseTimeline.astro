@@ -2,25 +2,25 @@
 const phases = [
   {
     title: 'Design & Specs',
-    sub: 'Canada',
+
     desc: 'Work with our local engineers to finalize design, standards, and process requirements.',
     icon: '📐',
   },
   {
-    title: 'Global Manufacturing',
-    sub: 'Overseas',
+    title: 'Manufacturing',
+   
     desc: 'Manufactured by our vetted partners to ensure cost advantage without sacrificing quality.',
     icon: '🏭',
   },
   {
     title: 'Compliance & Verification',
-    sub: 'ESA/CSA',
+
     desc: 'Electrical safety inspection and ESA/CSA SPE-1000 certification performed in Canada.',
     icon: '⚡',
   },
   {
     title: 'Local Support & Commissioning',
-    sub: 'Canada',
+
     desc: 'On-site installation, commissioning, and ongoing maintenance by our local team.',
     icon: '🔧',
   },
@@ -28,20 +28,35 @@ const phases = [
 ---
 <div class="max-w-5xl mx-auto px-4">
   <div class="relative">
-    <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-industrial-100 hidden md:block"></div>
+    <div class="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-gray-100 hidden md:block"></div>
+    
     <div class="space-y-12">
       {phases.map((phase, i) => (
-        <div class={`flex items-center gap-8 ${i % 2 === 0 ? 'md:flex-row' : 'md:flex-row-reverse'} flex-col`}>
-          <div class="flex-1 text-center md:text-left">
-            <div class="inline-flex items-center gap-2 text-xl font-bold mb-2">
-              <span class="text-3xl">{phase.icon}</span>
-              <span>{phase.title} <span class="text-accent text-sm">({phase.sub})</span></span>
-            </div>
+        <div class="grid md:grid-cols-[1fr_auto_1fr] items-center gap-8">
+          
+          <div class={`text-right hidden md:block ${i % 2 !== 0 ? 'invisible' : ''}`}>
+            <h3 class="text-xl font-bold mb-2">
+              {phase.title} 
+              <span class="ml-2 text-3xl">{phase.icon}</span>
+            </h3>
             <p class="text-gray-600">{phase.desc}</p>
           </div>
-          <div class="hidden md:block w-10 h-10 rounded-full bg-industrial-600 text-white font-bold text-lg flex items-center justify-center shrink-0">
-            {i+1}
+
+          <div class="z-10 w-10 h-10 rounded-full bg-blue-900 text-white font-bold flex items-center justify-center mx-auto">
+            {i + 1}
           </div>
+
+          <div class={`text-left hidden md:block ${i % 2 === 0 ? 'invisible' : ''}`}>
+            <h3 class="text-xl font-bold mb-2">
+              <span class="mr-2 text-3xl">{phase.icon}</span>
+              {phase.title} 
+            </h3>
+            <p class="text-gray-600">{phase.desc}</p>
+          </div>
+          
+          <div class="md:hidden text-center col-span-1">
+             </div>
+
         </div>
       ))}
     </div>
